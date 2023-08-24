@@ -1,0 +1,55 @@
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+@Entity()
+export class testing {
+  public nik: string;
+  @Column({
+    type: 'varchar',
+    length: 30,
+    nullable: false,
+    unique: true,
+  })
+  @PrimaryGeneratedColumn()
+  public no_kartu_keluarga: string;
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+  })
+  public nama_lengkap: string;
+  @Column({
+    type: 'varchar',
+    length: 45,
+    nullable: false,
+  })
+  public no_hp: string;
+  @Column({
+    type: 'varchar',
+    length: 45,
+    nullable: false,
+  })
+  public nisn: string;
+  @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: false,
+  })
+  public no_peserta: string;
+  @Column({
+    type: 'varchar',
+    length: 150,
+    nullable: false,
+  })
+  public npsn: string;
+  @Column({
+    type: 'varchar',
+    length: 250,
+    nullable: false,
+  })
+  public kd_upload_berkas: string;
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: false,
+  })
+  public waktu: string;
+}

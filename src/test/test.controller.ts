@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -8,6 +9,7 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import { TestService } from './test.service';
+import { testDto } from './test.dto';
 import { EntityNotFoundErrorFilter } from '../EntityNotFoundError.filter';
 
 @Controller('test')
@@ -20,23 +22,23 @@ export class TestController {
     return await this.TestSerive.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.TestSerive.findOne(id);
+  @Get(':nik')
+  async findOne(@Param('nik') nik: string) {
+    return await this.TestSerive.findOne(nik);
   }
 
   @Post()
-  async create() {
-    return await this.TestSerive.create();
+  async create(@Body() data: testDto) {
+    return await this.TestSerive.create(data);
   }
 
-  @Put(':id')
-  async update() {
-    return this.TestSerive.update();
+  @Put(':nik')
+  async update(@Body() data: testDto, @Param('nik') nik: string) {
+    return await this.TestSerive.update(data, nik);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.TestSerive.delete(id);
+  @Delete(':nik')
+  async remove(@Param('nik') nik: string) {
+    return await this.TestSerive.delete(nik);
   }
 }
