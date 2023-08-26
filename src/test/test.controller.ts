@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   UseFilters,
+  Headers,
 } from '@nestjs/common';
 import { TestService } from './test.service';
 import { testDto } from './test.dto';
@@ -18,7 +19,8 @@ export class TestController {
   constructor(private readonly TestSerive: TestService) {}
 
   @Get()
-  async findAll() {
+  async findAll(@Headers('Authorization') auth: string) {
+    console.log(auth.split('Bearer ')[1]);
     return await this.TestSerive.findAll();
   }
 

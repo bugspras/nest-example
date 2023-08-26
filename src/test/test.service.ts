@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Repository, getConnection } from 'typeorm';
+import { Repository } from 'typeorm';
 import { testing } from './test.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { testDto } from './test.dto';
+
+let m;
 
 @Injectable()
 export class TestService {
@@ -12,46 +14,47 @@ export class TestService {
   ) {}
   async findAll() {
     try {
-      const m = await this.repository
-        .createQueryBuilder('testing')
-        .leftJoin('test', 'test', 'testing.nik = test.nik')
-        .select([
-          'testing.nama_lengkap as nama',
-          'if(isnull(test.nik),0,test.nik) as nik',
-        ])
-        .getRawMany();
-      return m;
-      const usersWithRolesss = await this.repository
+      m = await this.repository
         .createQueryBuilder('a')
-        .leftJoinAndSelect('test', 'b', 'a.nik = b.nik')
+        .leftJoin('test', 'b', 'a.nik = b.nik')
+        .select([
+          'a.nama_lengkap as nama',
+          'if(isnull(b.nik),"nik belum terdaftar",b.nik) as nik',
+        ])
+        .groupBy('a.nik')
         .getRawMany();
-      return usersWithRolesss;
-      const usersWithRoles = await this.repository
-        .createQueryBuilder()
-        .select(['nik as `nomor induk kependudukan`', 'nama_lengkap'])
-        .getRawMany();
-      return usersWithRoles;
-
-      const entity = await this.repository
-        .createQueryBuilder('test')
-        .select('test.nik as nik, nama_lengkap')
-        .getRawMany();
-      return entity;
-      return this.repository.find({
-        select: ['nik'],
-      });
-      return this.repository.query(
-        `select nik,no_kartu_keluarga,no_hp from testing`,
-      );
+      if (Object.keys(m).length !== 0) {
+        m = { status: true, pesan: 'data ditemukan', data: m };
+      } else {
+        m = { status: false, pesan: 'data tidak ditemukan', data: '' };
+      }
+      return m;
     } catch (error) {
       return false;
     }
   }
-  async findOne(id: string) {
+  async findOne(nik: string) {
     try {
-      return await getConnection().query(
-        `select no_kartu_keluarga,no_hp from testing where no_kartu_keluarga='${id}'`,
-      );
+      m = await this.repository
+        .createQueryBuilder('a')
+        .leftJoin('test', 'b', 'a.nik = b.nik')
+        .select([
+          'a.nama_lengkap as nama',
+          'if(isnull(b.nik),"nik belum terdaftar",b.nik) as nik',
+        ])
+        .where({ nik: nik })
+        .groupBy('a.nik')
+        .getRawMany();
+      if (Object.keys(m).length !== 0) {
+        m = { status: true, pesan: 'data ditemukan', data: m };
+      } else {
+        m = { status: false, pesan: 'data tidak ditemukan', data: '' };
+      }
+      return m;
+      return await this.repository.findOne({
+        select: ['nama_lengkap', 'nik'],
+        where: { nik: nik },
+      });
     } catch (error) {
       return false;
     }
