@@ -19,8 +19,8 @@ export class TestController {
   constructor(private readonly TestSerive: TestService) {}
 
   @Get()
-  async findAll(@Headers('Authorization') auth: string) {
-    console.log(auth.split('Bearer ')[1]);
+  async findAll(@Headers('Authorization') auth: string): Promise<any> {
+    console.log(auth.split(' ')[1]);
     return await this.TestSerive.findAll();
   }
 
