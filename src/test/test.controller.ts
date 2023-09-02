@@ -7,20 +7,21 @@ import {
   Post,
   Put,
   UseFilters,
-  Headers,
+  UseGuards,
 } from '@nestjs/common';
 import { TestService } from './test.service';
 import { testDto } from './test.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { EntityNotFoundErrorFilter } from '../EntityNotFoundError.filter';
 
+@UseGuards(JwtAuthGuard)
 @Controller('test')
 @UseFilters(new EntityNotFoundErrorFilter())
 export class TestController {
   constructor(private readonly TestSerive: TestService) {}
 
   @Get()
-  async findAll(@Headers('Authorization') auth: string): Promise<any> {
-    console.log(auth.split(' ')[1]);
+  async findAll() {
     return await this.TestSerive.findAll();
   }
 

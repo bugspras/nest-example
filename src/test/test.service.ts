@@ -19,7 +19,8 @@ export class TestService {
         .leftJoin('test', 'b', 'a.nik = b.nik')
         .select([
           'a.nama_lengkap as nama',
-          'if(isnull(b.nik),"nik belum terdaftar",b.nik) as nik',
+          'a.nik as nik',
+          'if(isnull(b.nik),"nik belum terdaftar","nik telah terdaftar") as status',
         ])
         .groupBy('a.nik')
         .getRawMany();
@@ -40,7 +41,8 @@ export class TestService {
         .leftJoin('test', 'b', 'a.nik = b.nik')
         .select([
           'a.nama_lengkap as nama',
-          'if(isnull(b.nik),"nik belum terdaftar",b.nik) as nik',
+          'a.nik as nik',
+          'if(isnull(b.nik),"nik belum terdaftar","nik telah terdaftar") as status',
         ])
         .where({ nik: nik })
         .groupBy('a.nik')
